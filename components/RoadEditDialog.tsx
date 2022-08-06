@@ -52,11 +52,14 @@ const roadEditData = {
 };
 
 export default function RoadEditDialog({ x = 0, y = 0 }: RoadEditDialogProp) {
-  const { width, height } = useWindowSize();
+  const { width: windowWidth, height: windowHeigth } = useWindowSize();
 
   const [position, setPosition] = useState({ x, y }); // box의 포지션 값
   const [prevPosition, setPrevPositon] = useState({ x, y });
   const [isMinial, setIsManial] = useState(false);
+
+  const ROADEDITDIALOG_WIDTH = 472;
+  const ROADEDITDIALOG_HEIGTH = 58;
 
   const nodeRef = useRef(null);
   // 업데이트 되는 값을 set 해줌
@@ -87,8 +90,20 @@ export default function RoadEditDialog({ x = 0, y = 0 }: RoadEditDialogProp) {
 
   useEffect(() => {
     if (isMinial) {
+      setPosition({
+        x: windowWidth - ROADEDITDIALOG_WIDTH,
+        y: windowHeigth - ROADEDITDIALOG_HEIGTH,
+      });
+    }
+  }, [windowWidth, windowHeigth]);
+
+  useEffect(() => {
+    if (isMinial) {
       setPrevPositon(position);
-      setPosition({ x: width - 384 - 8, y: height - 50 - 8 });
+      setPosition({
+        x: windowWidth - ROADEDITDIALOG_WIDTH,
+        y: windowHeigth - ROADEDITDIALOG_HEIGTH,
+      });
     } else {
       setPosition(prevPosition);
     }
