@@ -1,6 +1,7 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/outline";
 import { useState } from "react";
 import clsx from "clsx";
+import RoadInfoMenuLists from "./RoadInfoMenuLists";
 
 export default function RoadInfoSideMenu() {
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(true);
@@ -17,10 +18,7 @@ export default function RoadInfoSideMenu() {
           isSideMenuOpen ? "" : "hidden"
         )}
       >
-        <div className="flex flex-col gap-y-2">
-          <h1 className=" text-2xl font-bold">도로정보</h1>
-          <p>검색</p>
-        </div>
+        <RoadInfoMenuLists />
       </div>
       <div className="w-6 flex flex-col justify-center ">
         <div className=" bg-white h-12 w-6 flex justify-center item-center rounded-r-lg border-slate-400 border-r border-y z-[120]">
