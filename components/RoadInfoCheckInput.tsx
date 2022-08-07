@@ -1,6 +1,6 @@
 interface RoadInfoCheckInputProp {
   title: string;
-  count: number;
+  count?: number;
 }
 
 export default function RoadInfoCheckInput({
@@ -19,7 +19,7 @@ export default function RoadInfoCheckInput({
       </div>
       <div className="ml-3 text-sm">
         <label htmlFor="comments" className="font-medium text-gray-700">
-          {title} ({count})
+          {title} {count ? `(${count})` : ""}
         </label>
       </div>
     </div>

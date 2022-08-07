@@ -2,6 +2,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/outline";
 import { useState } from "react";
 import clsx from "clsx";
 import RoadInfoMenuLists from "./RoadInfoMenuLists";
+import SlopeMenuLists from "./SlopeMenuLists";
 
 export default function RoadInfoSideMenu() {
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(true);
@@ -14,7 +15,7 @@ export default function RoadInfoSideMenu() {
     >
       <div
         className={clsx(
-          "w-64 bg-white h-full drop-shadow-lg p-4",
+          "w-64 bg-white h-full drop-shadow-lg py-4 px-2 flex flex-col gap-y-4",
           isSideMenuOpen ? "" : "hidden"
         )}
       >
