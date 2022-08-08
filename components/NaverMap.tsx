@@ -5,6 +5,7 @@ import {
 } from "lib/client/mapUtil";
 import useImsp from "lib/client/useIMSP";
 import useRoadAd from "lib/client/useRoadAd";
+import { useState } from "react";
 import { useEffect, useRef } from "react";
 
 const mapStyle = {
@@ -14,7 +15,7 @@ const mapStyle = {
 
 const mapOption = {
   // center: new naver.maps.LatLng(imspData?.longitude, imspData?.latitude),
-  zoom: 15,
+  zoom: 17,
   // zoom: imspData?.zoom,
   maxZoom: 17,
   minZoom: 13, //지도의 최소 줌 레벨
@@ -33,25 +34,24 @@ export default function NaverMap() {
   const { ok: imspOk, data: imspData } = useImsp();
   const { ok: roadDataOk, data: roadData } = useRoadAd();
 
+  const [selectUid, setSelectUid] = useState<number | null>(null);
+
   const mapRef = useRef<HTMLElement | null | any>(null);
 
-  // console.log(naver.maps.Position.TOP_RIGHT);
+  // console.log(selectUid);
   useEffect(() => {
     if (imspOk && roadDataOk) {
-      const initMap = () => {
-        const map = new naver.maps.Map("map", mapOption);
-        setInitPostition(map, imspData?.longitude, imspData?.latitude);
-        // setInitZoom(map, imspData?.zoom);
+      const map = new naver.maps.Map("map", mapOption);
+      setInitPostition(map, imspData?.longitude, imspData?.latitude);
+      // setInitZoom(map, imspData?.zoom);
 
-        roadData.data.map((roadObj: RoadObj) => {
-          generateRoadPath(roadObj, map);
-        });
-      };
-      initMap();
+      roadData.data.map(({ coordinates, uid }: RoadObj) => {
+        generateRoadPath(coordinates, uid, map, setSelectUid);
+      });
     }
   }, [imspOk, imspData]);
 
-  console.log(roadData);
+  // console.log(roadData);
   if (roadData) {
   }
 

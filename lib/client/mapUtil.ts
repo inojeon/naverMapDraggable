@@ -1,3 +1,6 @@
+import { Dispatch, SetStateAction } from "react";
+import useRoadPopupInfo from "./useRoadPopupInfo";
+
 export interface RoadObj {
   coordinates: any[];
   uid: number;
@@ -19,10 +22,12 @@ export const setInitZoom = (map: any, zoom: number | undefined) => {
   }
 };
 
-const onclickRoad = async (uid: number, map: any) => {
-  console.log("on click road: " + uid);
-  // http://bluesignal.iptime.org:48080/v2/road/ri/295"
-  fetch(`http://bluesignal.iptime.org:48080/v2/road/ri/${uid}`, {
+const onClickRoad = async (uid: number, map: any) => {
+  // const { ok, data } = useRoadPopupInfo({ uid });
+
+  // console.log(data);
+  //bluesignal.iptime.org:48080/v2/road/ri/295"
+  http: fetch(`http://bluesignal.iptime.org:48080/v2/road/ri/${uid}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -104,9 +109,9 @@ const onclickRoad = async (uid: number, map: any) => {
       `;
 
         const infoWindow = new naver.maps.InfoWindow({
-          content:
-            "도로 코드 12312312<br />" +
-            "위치 서울특별시 마포구 도로명 1<br />",
+          content: roadInfoContent,
+          // "도로 코드 12312312<br />" +
+          // "위치 서울특별시 마포구 도로명 1<br />",
           //maxWidth: 140,
           //backgroundColor: "#eee",
           //borderColor: "#2db400",
@@ -116,7 +121,7 @@ const onclickRoad = async (uid: number, map: any) => {
           //anchorColor: "#eee",
           //pixelOffset: new naver.maps.Point(20, -20),
         });
-        infoWindow.setContent(roadInfoContent);
+        // infoWindow.setContent(roadInfoContent);
         infoWindow.open(
           map,
           new naver.maps.LatLng(data.coordinates[0][1], data.coordinates[0][0])
@@ -128,10 +133,16 @@ const onclickRoad = async (uid: number, map: any) => {
     });
 };
 
-export const generateRoadPath = (roadObj: RoadObj, map: any) => {
+export const generateRoadPath = (
+  // roadObj: RoadObj,
+  coordinates: any[],
+  uid: number,
+  map: any,
+  setSelectUid: Dispatch<SetStateAction<number | null>>
+) => {
   const polygonPath = [
-    new naver.maps.LatLng(roadObj.coordinates[0][1], roadObj.coordinates[0][0]),
-    new naver.maps.LatLng(roadObj.coordinates[1][1], roadObj.coordinates[1][0]),
+    new naver.maps.LatLng(coordinates[0][1], coordinates[0][0]),
+    new naver.maps.LatLng(coordinates[1][1], coordinates[1][0]),
   ];
   const polygon = new naver.maps.Polygon({
     paths: polygonPath,
@@ -145,6 +156,22 @@ export const generateRoadPath = (roadObj: RoadObj, map: any) => {
     map: map,
   });
   naver.maps.Event.addListener(polygon, "click", () => {
-    onclickRoad(roadObj.uid, map);
+    onClickRoad(uid, map);
+  });
+
+  naver.maps.Event.addListener(polygon, "mouseover", function () {
+    polygon.setOptions({
+      paths: polygonPath,
+      strokeColor: "#E51D1A",
+      strokeOpacity: 1,
+    });
+  });
+
+  naver.maps.Event.addListener(polygon, "mouseout", function () {
+    polygon.setOptions({
+      paths: polygonPath,
+      strokeColor: "#ff0000",
+      strokeOpacity: 0.6,
+    });
   });
 };
