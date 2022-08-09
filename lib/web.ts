@@ -38,3 +38,13 @@ export function fetch_imsp() {
     "http://bluesignal.iptime.org:48080/v2/commons/imsp"
   );
 }
+
+interface fetchRoadInfoProps {
+  uid: number;
+}
+export function fetch_roadInfo({ uid }: fetchRoadInfoProps) {
+  return apiRequest(
+    "get",
+    `http://bluesignal.iptime.org:48080/v2/road/ri/${uid}`
+  );
+}

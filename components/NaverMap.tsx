@@ -1,10 +1,13 @@
 import {
   generateRoadPath,
+  onRoadInfo,
   RoadObj,
+  roadPopupInfo,
   setInitPostition,
 } from "lib/client/mapUtil";
 import useImsp from "lib/client/useIMSP";
 import useRoadAd from "lib/client/useRoadAd";
+import { fetch_roadInfo } from "lib/web";
 import { useState } from "react";
 import { useEffect, useRef } from "react";
 
@@ -34,26 +37,37 @@ export default function NaverMap() {
   const { ok: imspOk, data: imspData } = useImsp();
   const { ok: roadDataOk, data: roadData } = useRoadAd();
 
+  const [initLoad, setInitLoad] = useState(false);
   const [selectUid, setSelectUid] = useState<number | null>(null);
 
   const mapRef = useRef<HTMLElement | null | any>(null);
 
-  // console.log(selectUid);
+  // api(촉기 위차, 지도 데이터) 요청이 들어온 이후 맵 초기화 및 지도에 도료 표시 및 이벤트 등록
   useEffect(() => {
-    if (imspOk && roadDataOk) {
-      const map = new naver.maps.Map("map", mapOption);
-      setInitPostition(map, imspData?.longitude, imspData?.latitude);
+    //imspOk, roadDataOk 요청 받고 최초 1회만
+    if (imspOk && roadDataOk && !initLoad) {
+      mapRef.current = new naver.maps.Map("map", mapOption);
+      setInitPostition(mapRef.current, imspData?.longitude, imspData?.latitude);
       // setInitZoom(map, imspData?.zoom);
-
       roadData.data.map(({ coordinates, uid }: RoadObj) => {
-        generateRoadPath(coordinates, uid, map, setSelectUid);
+        generateRoadPath(coordinates, uid, mapRef.current, setSelectUid);
       });
+      setInitLoad(true);
     }
-  }, [imspOk, imspData]);
+  }, [roadDataOk, imspData]);
+
+  //selectUid 값이 변경된 경우 -> generateRoadPath를 클릭한 경우
+  useEffect(() => {
+    onRoadInfo(selectUid, mapRef.current);
+  }, [selectUid]);
 
   // console.log(roadData);
   if (roadData) {
   }
 
-  return <div id="map" ref={mapRef} style={mapStyle}></div>;
+  return (
+    <>
+      <div id="map" style={mapStyle}></div>
+    </>
+  );
 }
