@@ -2,12 +2,10 @@ import {
   generateRoadPath,
   onRoadInfo,
   RoadObj,
-  roadPopupInfo,
   setInitPostition,
 } from "lib/client/mapUtil";
 import useImsp from "lib/client/useIMSP";
 import useRoadAd from "lib/client/useRoadAd";
-import { fetch_roadInfo } from "lib/web";
 import { useState } from "react";
 import { useEffect, useRef } from "react";
 
